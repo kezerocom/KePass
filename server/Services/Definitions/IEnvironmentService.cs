@@ -2,8 +2,7 @@
 
 public interface IEnvironmentService
 {
-    string Get(string key);
-    T GetValue<T>(string key);
-    bool IsDevelopment();
-    bool IsProduction();
+    string? Get(string key);
+    string? Get(string key, string? defaultValue);
+    void Set(string key, string? value);
 }
