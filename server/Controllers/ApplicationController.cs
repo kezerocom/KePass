@@ -13,7 +13,7 @@ public class ApplicationController(IEnvironmentService environment) : Controller
     [ProducesResponseType<ApplicationGetClientResponse>((int)HttpStatusCode.OK)]
     public IActionResult GetClient()
     {
-        var name = environment.Get("APPLICATION_CLIENT_NAME", "KePass")!;
+        var name = environment.Get("APPLICATION_CLIENT_NAME", "Unknown")!;
         var version = Version.Parse(environment.Get("APPLICATION_CLIENT_VERSION", new Version(1, 0).ToString())!);
 
         return Ok(new ApplicationGetClientResponse(name, version));
