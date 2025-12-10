@@ -11,6 +11,7 @@ public class DatabaseContext : DbContext
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Attachment> Attachments { get; set; }
     public DbSet<Audit> Audits { get; set; }
+    public DbSet<Blob> Blobs { get; set; }
     public DbSet<Subscription> Subscriptions { get; set; }
     public DbSet<Vault> Vaults { get; set; }
 

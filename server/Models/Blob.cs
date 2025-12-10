@@ -1,6 +1,6 @@
 ﻿using KePass.Server.Types.Definitions;
 
-namespace KePass.Server.Types;
+namespace KePass.Server.Models;
 
 public class Blob : IValidation
 {

@@ -6,7 +6,7 @@ using KePass.Server.Repositories.Implementations;
 using KePass.Server.Services.Definitions;
 using KePass.Server.Services.Implementations;
 
-DotNetEnv.Env.Load(); // Load Environment Variables
+DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -17,6 +17,7 @@ builder.Services.AddSingleton<IEnvironmentService, EnvironmentService>();
 builder.Services.AddScoped<IRepository<Account>, AccountRepository>();
 builder.Services.AddScoped<IRepository<Attachment>, AttachmentRepository>();
 builder.Services.AddScoped<IRepository<Audit>, AuditRepository>();
+builder.Services.AddScoped<IRepository<Blob>, BlobRepository>();
 builder.Services.AddScoped<IRepository<Subscription>, SubscriptionRepository>();
 builder.Services.AddScoped<IRepository<Vault>, VaultRepository>();
 builder.Services.AddDbContext<DatabaseContext>();
