@@ -1,4 +1,8 @@
+using KePass.Server.Data;
 using KePass.Server.Middlewares;
+using KePass.Server.Models;
+using KePass.Server.Repositories.Definitions;
+using KePass.Server.Repositories.Implementations;
 using KePass.Server.Services.Definitions;
 using KePass.Server.Services.Implementations;
 
@@ -10,6 +14,12 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IEnvironmentService, EnvironmentService>();
+builder.Services.AddScoped<IRepository<Account>, AccountRepository>();
+builder.Services.AddScoped<IRepository<Attachment>, AttachmentRepository>();
+builder.Services.AddScoped<IRepository<Audit>, AuditRepository>();
+builder.Services.AddScoped<IRepository<Subscription>, SubscriptionRepository>();
+builder.Services.AddScoped<IRepository<Vault>, VaultRepository>();
+builder.Services.AddDbContext<DatabaseContext>();
 
 var app = builder.Build();
 app.UseRouting();
