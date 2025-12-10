@@ -8,6 +8,11 @@ namespace KePass.Server.Repositories.Implementations;
 
 public class AttachmentRepository(DatabaseContext context) : IRepository<Attachment>
 {
+    public async Task<Attachment?> GetAsync(Expression<Func<Attachment, bool>> predicate)
+    {
+        return await context.Attachments.AsNoTracking().FirstOrDefaultAsync(predicate);
+    }
+
     public async Task<Attachment?> GetByIdAsync(Guid id)
     {
         return await context.Attachments.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);

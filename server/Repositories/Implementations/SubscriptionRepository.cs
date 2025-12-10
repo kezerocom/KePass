@@ -8,6 +8,11 @@ namespace KePass.Server.Repositories.Implementations;
 
 public class SubscriptionRepository(DatabaseContext context) : IRepository<Subscription>
 {
+    public async Task<Subscription?> GetAsync(Expression<Func<Subscription, bool>> predicate)
+    {
+        return await context.Subscriptions.AsNoTracking().FirstOrDefaultAsync(predicate);
+    }
+
     public async Task<Subscription?> GetByIdAsync(Guid id)
     {
         return await context.Subscriptions.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);

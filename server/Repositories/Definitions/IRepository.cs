@@ -4,6 +4,7 @@ namespace KePass.Server.Repositories.Definitions;
 
 public interface IRepository<T> where T : class
 {
+    Task<T?> GetAsync(Expression<Func<T, bool>> predicate);
     Task<T?> GetByIdAsync(Guid id);
     Task<IEnumerable<T>> GetAllAsync();
     Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> predicate);

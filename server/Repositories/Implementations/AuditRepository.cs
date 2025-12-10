@@ -8,6 +8,11 @@ namespace KePass.Server.Repositories.Implementations;
 
 public class AuditRepository(DatabaseContext context) : IRepository<Audit>
 {
+    public async Task<Audit?> GetAsync(Expression<Func<Audit, bool>> predicate)
+    {
+        return await context.Audits.AsNoTracking().FirstOrDefaultAsync(predicate);
+    }
+
     public async Task<Audit?> GetByIdAsync(Guid id)
     {
         return await context.Audits.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);

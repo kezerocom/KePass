@@ -8,6 +8,11 @@ namespace KePass.Server.Repositories.Implementations;
 
 public class VaultRepository(DatabaseContext context) : IRepository<Vault>
 {
+    public async Task<Vault?> GetAsync(Expression<Func<Vault, bool>> predicate)
+    {
+        return await context.Vaults.AsNoTracking().FirstOrDefaultAsync(predicate);
+    }
+
     public async Task<Vault?> GetByIdAsync(Guid id)
     {
         return await context.Vaults.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
