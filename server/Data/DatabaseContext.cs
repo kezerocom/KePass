@@ -1,5 +1,8 @@
 ﻿using KePass.Server.Models;
+using KePass.Server.Types;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace KePass.Server.Data;
 
@@ -14,7 +17,7 @@ public class DatabaseContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlite("Data Source=local.sqlite");
-        
+
         base.OnConfiguring(optionsBuilder);
     }
 
@@ -25,6 +28,17 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<Audit>(x => x.HasKey(e => e.Id));
         modelBuilder.Entity<Subscription>(x => x.HasKey(e => e.Id));
         modelBuilder.Entity<Vault>(x => x.HasKey(e => e.Id));
+        
+        modelBuilder.Entity<Account>().HasIndex(e => e.Username).IsUnique();
+        modelBuilder.Entity<Account>().HasIndex(e => e.Email).IsUnique();
+        modelBuilder.Entity<Attachment>().HasIndex(e => e.Name).IsUnique();
+        modelBuilder.Entity<Blob>().HasIndex(e => e.Name).IsUnique();
+        modelBuilder.Entity<Subscription>().HasIndex(e => e.PaymentId).IsUnique();
+        
+        modelBuilder.Entity<Account>().Property(x => x.Email).HasConversion(Email.GetValueConverter());
+        modelBuilder.Entity<Account>().Property(x => x.Password).HasConversion(Password.GetValueConverter());
+        modelBuilder.Entity<Vault>().Property(x => x.Key).HasConversion(Key.GetValueConverter());
+        modelBuilder.Entity<Vault>().Property(x => x.Version).HasConversion(VersionExtension.GetValueConverter());
         
         base.OnModelCreating(modelBuilder);
     }

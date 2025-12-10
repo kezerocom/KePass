@@ -1,26 +1,21 @@
-﻿using KePass.Server.Types;
-using KePass.Server.Types.Definitions;
+﻿using KePass.Server.Types.Definitions;
 
-namespace KePass.Server.Models;
+namespace KePass.Server.Types;
 
-public class Attachment : IValidation
+public class Blob : IValidation
 {
     public required Guid Id { get; set; }
     public required Guid Name { get; set; }
-    public required Guid VaultId { get; set; }
-    public required Guid BlobId { get; set; }
-    public required bool IsAvailable { get; set; }
+    public required long Size { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
-
 
     public bool IsValid()
     {
         return
             Id != Guid.Empty &&
             Name != Guid.Empty &&
-            VaultId != Guid.Empty &&
-            BlobId != Guid.Empty &&
+            Size > 0 &&
             CreatedAt > DateTime.UnixEpoch &&
             UpdatedAt >= CreatedAt;
     }
