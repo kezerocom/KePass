@@ -11,7 +11,7 @@ namespace KePass.Server.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/account")]
-public class AccountController(IAccountService service, ICurrentIdentity identity) : ControllerBase
+public class AccountController(IAccountService service) : ControllerBase
 {
     [AllowAnonymous]
     [HttpGet("{id:guid}")]
@@ -23,7 +23,7 @@ public class AccountController(IAccountService service, ICurrentIdentity identit
         if (id == Guid.Empty)
             return BadRequest(new ValidationProblemDetails { Detail = "Invalid ID." });
 
-        var result = await service.GetByIdAsync(id, identity);
+        var result = await service.GetByIdAsync(id);
         if (!result.Success)
             return NotFound(new ErrorProblemDetails(result.Error));
 
@@ -42,7 +42,7 @@ public class AccountController(IAccountService service, ICurrentIdentity identit
         if (string.IsNullOrWhiteSpace(username))
             return BadRequest(new ValidationProblemDetails { Detail = "Username is required." });
 
-        var result = await service.GetByUsernameAsync(username, identity);
+        var result = await service.GetByUsernameAsync(username);
         if (!result.Success)
             return NotFound(new ErrorProblemDetails(result.Error));
 
@@ -61,7 +61,7 @@ public class AccountController(IAccountService service, ICurrentIdentity identit
         var emailObj = new Email(email);
         if (!emailObj.IsValid()) return BadRequest(new ValidationProblemDetails { Detail = "Invalid email format." });
 
-        var result = await service.GetByEmailAsync(emailObj, identity);
+        var result = await service.GetByEmailAsync(emailObj);
         if (!result.Success)
             return NotFound(new ErrorProblemDetails(result.Error));
 
@@ -86,7 +86,7 @@ public class AccountController(IAccountService service, ICurrentIdentity identit
         if (!password.IsValid())
             return BadRequest(new ValidationProblemDetails { Detail = "Invalid password." });
 
-        var result = await service.CreateAsync(request.Username, email, password, AccountRole.User, identity);
+        var result = await service.CreateAsync(request.Username, email, password, AccountRole.User);
         if (!result.Success)
             return BadRequest(new ErrorProblemDetails(result.Error));
 
@@ -104,7 +104,7 @@ public class AccountController(IAccountService service, ICurrentIdentity identit
         if (id == Guid.Empty || string.IsNullOrWhiteSpace(newUsername))
             return BadRequest(new ValidationProblemDetails { Detail = "Invalid input." });
 
-        var result = await service.UpdateUsernameAsync(id, newUsername, identity);
+        var result = await service.UpdateUsernameAsync(id, newUsername);
         if (!result.Success)
             return NotFound(new ErrorProblemDetails(
                 result.Error));
@@ -123,7 +123,7 @@ public class AccountController(IAccountService service, ICurrentIdentity identit
         if (id == Guid.Empty || !emailObj.IsValid())
             return BadRequest(new ValidationProblemDetails { Detail = "Invalid input." });
 
-        var result = await service.UpdateEmailAsync(id, emailObj, identity);
+        var result = await service.UpdateEmailAsync(id, emailObj);
         if (!result.Success)
             return NotFound(new ErrorProblemDetails(
                 result.Error));
@@ -143,7 +143,7 @@ public class AccountController(IAccountService service, ICurrentIdentity identit
         if (id == Guid.Empty || !newPassword.IsValid())
             return BadRequest(new ValidationProblemDetails { Detail = "Invalid password." });
 
-        var result = await service.UpdatePasswordAsync(id, newPassword, identity);
+        var result = await service.UpdatePasswordAsync(id, newPassword);
         if (!result.Success)
             return NotFound(new ErrorProblemDetails(result.Error));
 
@@ -159,7 +159,7 @@ public class AccountController(IAccountService service, ICurrentIdentity identit
     {
         if (id == Guid.Empty) return BadRequest(new ValidationProblemDetails { Detail = "Invalid ID." });
 
-        var result = await service.ActivateAsync(id, identity);
+        var result = await service.ActivateAsync(id);
         if (!result.Success)
             return NotFound(new ErrorProblemDetails(result.Error));
 
@@ -175,7 +175,7 @@ public class AccountController(IAccountService service, ICurrentIdentity identit
     {
         if (id == Guid.Empty) return BadRequest(new ValidationProblemDetails { Detail = "Invalid ID." });
 
-        var result = await service.UpdateRoleAsync(id, request.Role, identity);
+        var result = await service.UpdateRoleAsync(id, request.Role);
         if (!result.Success)
             return NotFound(new ErrorProblemDetails(result.Error));
 
@@ -192,7 +192,7 @@ public class AccountController(IAccountService service, ICurrentIdentity identit
     {
         if (id == Guid.Empty) return BadRequest(new ValidationProblemDetails { Detail = "Invalid ID." });
 
-        var result = await service.DeactivateAsync(id, identity);
+        var result = await service.DeactivateAsync(id);
         if (!result.Success)
             return NotFound(new ErrorProblemDetails(result.Error));
 

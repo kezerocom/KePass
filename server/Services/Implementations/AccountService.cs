@@ -7,9 +7,9 @@ using KePass.Server.ValueObjects.Enums;
 
 namespace KePass.Server.Services.Implementations;
 
-public class AccountService(IRepositoryBase<Account> repository) : IAccountService
+public class AccountService(IRepositoryBase<Account> repository, ICurrentIdentity identity) : IAccountService
 {
-    public async Task<OperationResult<Account>> GetByIdAsync(Guid id, ICurrentIdentity identity)
+    public async Task<OperationResult<Account>> GetByIdAsync(Guid id)
     {
         var account = await repository.GetByIdAsync(id);
 
@@ -18,7 +18,7 @@ public class AccountService(IRepositoryBase<Account> repository) : IAccountServi
             : OperationResult<Account>.Fail($"Account with ID '{id}' not found.");
     }
 
-    public async Task<OperationResult<Account>> GetByUsernameAsync(string username, ICurrentIdentity identity)
+    public async Task<OperationResult<Account>> GetByUsernameAsync(string username)
     {
         var account = await repository.GetAsync(a => a.Username.ToLower().Trim() == username.ToLower().Trim());
 
@@ -27,7 +27,7 @@ public class AccountService(IRepositoryBase<Account> repository) : IAccountServi
             : OperationResult<Account>.Fail($"Account with username '{username}' not found.");
     }
 
-    public async Task<OperationResult<Account>> GetByEmailAsync(Email email, ICurrentIdentity identity)
+    public async Task<OperationResult<Account>> GetByEmailAsync(Email email)
     {
         var account = await repository.GetAsync(a => a.Email.Value.ToLower().Trim() == email.Value.ToLower().Trim());
 
@@ -37,7 +37,7 @@ public class AccountService(IRepositoryBase<Account> repository) : IAccountServi
     }
 
     public async Task<OperationResult<Account>> CreateAsync(string username, Email email, Password password,
-        AccountRole role, ICurrentIdentity identity)
+        AccountRole role)
     {
         if (!email.IsValid())
             return OperationResult<Account>.Fail($"Invalid email '{email.Value}'.");
@@ -45,10 +45,10 @@ public class AccountService(IRepositoryBase<Account> repository) : IAccountServi
         if (!password.IsValid())
             return OperationResult<Account>.Fail("Password does not meet required criteria.");
 
-        if (await GetByUsernameAsync(username, identity) is { Success: true })
+        if (await GetByUsernameAsync(username) is { Success: true })
             return OperationResult<Account>.Fail($"Username '{username}' is already in use.");
 
-        if (await GetByEmailAsync(email, identity) is { Success: true })
+        if (await GetByEmailAsync(email) is { Success: true })
             return OperationResult<Account>.Fail($"Email '{email.Value}' is already in use.");
 
         var account = new Account
@@ -73,88 +73,86 @@ public class AccountService(IRepositoryBase<Account> repository) : IAccountServi
             : OperationResult<Account>.Fail("Failed to create account due to an internal error.");
     }
 
-    public async Task<OperationResult<Account>> UpdateUsernameAsync(Guid id, string newUsername,
-        ICurrentIdentity identity)
+    public async Task<OperationResult<Account>> UpdateUsernameAsync(Guid id, string newUsername)
     {
-        if (await GetByUsernameAsync(newUsername, identity) is { Success: true })
+        if (await GetByUsernameAsync(newUsername) is { Success: true })
             return OperationResult<Account>.Fail($"Username '{newUsername}' is already in use.");
 
-        var accountResult = await GetByIdAsync(id, identity);
+        var accountResult = await GetByIdAsync(id);
         if (!accountResult.Success) return accountResult;
 
         var account = accountResult.Result;
         account.Username = newUsername.ToLower().Trim();
 
-        return await UpdateAccountAsync(account, identity);
+        return await UpdateAccountAsync(account);
     }
 
-    public async Task<OperationResult<Account>> UpdateEmailAsync(Guid id, Email newEmail, ICurrentIdentity identity)
+    public async Task<OperationResult<Account>> UpdateEmailAsync(Guid id, Email newEmail)
     {
         if (!newEmail.IsValid())
             return OperationResult<Account>.Fail($"Invalid email '{newEmail.Value}'.");
 
-        if (await GetByEmailAsync(newEmail, identity) is { Success: true })
+        if (await GetByEmailAsync(newEmail) is { Success: true })
             return OperationResult<Account>.Fail($"Email '{newEmail.Value}' is already in use.");
 
-        var accountResult = await GetByIdAsync(id, identity);
+        var accountResult = await GetByIdAsync(id);
         if (!accountResult.Success) return accountResult;
 
         var account = accountResult.Result;
         account.Email = newEmail;
 
-        return await UpdateAccountAsync(account, identity);
+        return await UpdateAccountAsync(account);
     }
 
-    public async Task<OperationResult<Account>> UpdatePasswordAsync(Guid id, Password newPassword,
-        ICurrentIdentity identity)
+    public async Task<OperationResult<Account>> UpdatePasswordAsync(Guid id, Password newPassword)
     {
         if (!newPassword.IsValid())
             return OperationResult<Account>.Fail("Invalid password.");
 
-        var accountResult = await GetByIdAsync(id, identity);
+        var accountResult = await GetByIdAsync(id);
         if (!accountResult.Success) return accountResult;
 
         var account = accountResult.Result;
         account.Password = newPassword;
 
-        return await UpdateAccountAsync(account, identity);
+        return await UpdateAccountAsync(account);
     }
 
-    public async Task<OperationResult<Account>> UpdateRoleAsync(Guid id, AccountRole role, ICurrentIdentity identity)
+    public async Task<OperationResult<Account>> UpdateRoleAsync(Guid id, AccountRole role)
     {
-        var accountResult = await GetByIdAsync(id, identity);
+        var accountResult = await GetByIdAsync(id);
         if (!accountResult.Success) return accountResult;
 
         var account = accountResult.Result;
         account.Role = role;
 
-        return await UpdateAccountAsync(account, identity);
+        return await UpdateAccountAsync(account);
     }
 
-    public async Task<OperationResult<Account>> ActivateAsync(Guid id, ICurrentIdentity identity)
+    public async Task<OperationResult<Account>> ActivateAsync(Guid id)
     {
-        var accountResult = await GetByIdAsync(id, identity);
+        var accountResult = await GetByIdAsync(id);
         if (!accountResult.Success) return accountResult;
 
         var account = accountResult.Result;
         account.IsActive = true;
 
-        return await UpdateAccountAsync(account, identity);
+        return await UpdateAccountAsync(account);
     }
 
-    public async Task<OperationResult<Account>> DeactivateAsync(Guid id, ICurrentIdentity identity)
+    public async Task<OperationResult<Account>> DeactivateAsync(Guid id)
     {
-        var accountResult = await GetByIdAsync(id, identity);
+        var accountResult = await GetByIdAsync(id);
 
         if (!accountResult.Success) return accountResult;
 
         var account = accountResult.Result;
         account.IsActive = false;
 
-        return await UpdateAccountAsync(account, identity);
+        return await UpdateAccountAsync(account);
     }
 
-    private async Task<OperationResult<Account>> UpdateAccountAsync(Account account, ICurrentIdentity identity)
+    private async Task<OperationResult<Account>> UpdateAccountAsync(Account account)
     {
         account.UpdatedAt = DateTime.UtcNow;
 

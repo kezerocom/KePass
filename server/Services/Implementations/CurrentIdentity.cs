@@ -7,5 +7,5 @@ public class CurrentIdentity(IHttpContextAccessor accessor) : ICurrentIdentity
 {
     public bool IsExistent => Identity != null;
     public bool IsNotExistent => Identity == null;
-    public Identity? Identity => Identity.CreateFromClaims(accessor.HttpContext!.User.Claims.ToArray());
+    public Identity? Identity { get; } = Identity.CreateFromClaims(accessor.HttpContext?.User.Claims.ToArray());
 }
