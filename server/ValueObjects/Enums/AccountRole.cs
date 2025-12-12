@@ -2,7 +2,7 @@
 
 public enum AccountRole
 {
-    User = 0,
-    Auditor = 512,
-    Administrator = 1024,
+    User = 1,
+    Auditor = 2,
+    Administrator = 4,
 }

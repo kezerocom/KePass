@@ -2,7 +2,7 @@
 
 public enum SubscriptionType
 {
-    Basic,
-    Premium,
-    Enterprise
+    Basic = 1,
+    Premium = 2,
+    Enterprise = 4
 }
