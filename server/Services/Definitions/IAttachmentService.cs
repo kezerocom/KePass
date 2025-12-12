@@ -1,5 +1,5 @@
 ﻿using KePass.Server.Models;
-using KePass.Server.Types;
+using KePass.Server.ValueObjects;
 
 namespace KePass.Server.Services.Definitions;
 

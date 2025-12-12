@@ -1,10 +1,10 @@
 ﻿using System.Text.RegularExpressions;
-using KePass.Server.Types.Definitions;
+using KePass.Server.Commons.Definitions;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace KePass.Server.Types;
+namespace KePass.Server.ValueObjects;
 
-public readonly struct Email : IValidation
+public struct Email : IValidation
 {
     public string Value { get; private init; }
     public string Domain { get; private init; }

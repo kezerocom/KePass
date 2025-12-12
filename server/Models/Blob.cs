@@ -1,4 +1,4 @@
-﻿using KePass.Server.Types.Definitions;
+﻿using KePass.Server.Commons.Definitions;
 
 namespace KePass.Server.Models;
 

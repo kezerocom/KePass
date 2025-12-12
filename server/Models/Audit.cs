@@ -1,5 +1,5 @@
-﻿using KePass.Server.Types.Definitions;
-using KePass.Server.Types.Enums;
+﻿using KePass.Server.Commons.Definitions;
+using KePass.Server.ValueObjects.Enums;
 
 namespace KePass.Server.Models;
 

@@ -1,4 +1,4 @@
-﻿namespace KePass.Server.Types.Definitions;
+﻿namespace KePass.Server.Commons.Definitions;
 
 public interface IValidation
 {

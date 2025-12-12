@@ -1,8 +1,8 @@
-﻿using KePass.Server.Types.Definitions;
-using KePass.Server.Types.Enums;
+﻿using KePass.Server.Commons.Definitions;
+using KePass.Server.ValueObjects.Enums;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace KePass.Server.Types;
+namespace KePass.Server.ValueObjects;
 
 public struct Password : IValidation
 {

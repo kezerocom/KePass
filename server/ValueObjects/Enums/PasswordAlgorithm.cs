@@ -1,4 +1,4 @@
-﻿namespace KePass.Server.Types.Enums;
+﻿namespace KePass.Server.ValueObjects.Enums;
 
 public enum PasswordAlgorithm
 {
