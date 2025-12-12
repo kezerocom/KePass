@@ -1,9 +1,11 @@
-﻿namespace KePass.Server.Middlewares;
+﻿using Microsoft.AspNetCore.Authentication;
 
-public class AuthenticationMiddleware(RequestDelegate next)
+namespace KePass.Server.Middlewares;
+
+public static class AuthenticationMiddleware
 {
-    public async Task InvokeAsync(HttpContext context)
+    public static IServiceCollection AddAuthenticationWithToken(this IServiceCollection services)
     {
-        await next(context);
+        return services;
     }
 }
