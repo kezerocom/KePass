@@ -16,6 +16,8 @@ public class Blob : IValidation
             Id != Guid.Empty &&
             Name != Guid.Empty &&
             Size > 0 &&
+            CreatedAt.Kind == DateTimeKind.Utc &&
+            UpdatedAt.Kind == DateTimeKind.Utc &&
             CreatedAt > DateTime.UnixEpoch &&
             UpdatedAt >= CreatedAt;
     }

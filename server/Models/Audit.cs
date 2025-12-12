@@ -11,6 +11,7 @@ public class Audit : IValidation
     public required AuditResourceType ResourceType { get; set; }
     public required string Action { get; set; }
     public required DateTime CreatedAt { get; set; }
+    public required DateTime UpdatedAt { get; set; }
 
     public bool IsValid()
     {
@@ -19,6 +20,9 @@ public class Audit : IValidation
             AccountId != Guid.Empty &&
             ResourceId != Guid.Empty &&
             !string.IsNullOrWhiteSpace(Action) &&
-            CreatedAt > DateTime.UnixEpoch;
+            CreatedAt.Kind == DateTimeKind.Utc &&
+            UpdatedAt.Kind == DateTimeKind.Utc &&
+            CreatedAt > DateTime.UnixEpoch &&
+            UpdatedAt >= CreatedAt;
     }
 }

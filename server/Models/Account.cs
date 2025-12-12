@@ -13,7 +13,7 @@ public class Account : IValidation
     public required bool IsActive { get; set; }
     public required DateTime CreatedAt { get; set; }
     public required DateTime UpdatedAt { get; set; }
-    
+
     public bool IsValid()
     {
         return
@@ -21,6 +21,8 @@ public class Account : IValidation
             Regex.IsMatch(Username, "^[a-z0-9]+(?:[.-]?[a-z0-9]+)*$") &&
             Password.IsValid() &&
             Email.IsValid() &&
+            CreatedAt.Kind == DateTimeKind.Utc &&
+            UpdatedAt.Kind == DateTimeKind.Utc &&
             CreatedAt > DateTime.UnixEpoch &&
             UpdatedAt >= CreatedAt;
     }

@@ -21,6 +21,8 @@ public class Attachment : IValidation
             Name != Guid.Empty &&
             VaultId != Guid.Empty &&
             BlobId != Guid.Empty &&
+            CreatedAt.Kind == DateTimeKind.Utc &&
+            UpdatedAt.Kind == DateTimeKind.Utc &&
             CreatedAt > DateTime.UnixEpoch &&
             UpdatedAt >= CreatedAt;
     }

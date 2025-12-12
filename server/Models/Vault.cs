@@ -20,6 +20,8 @@ public class Vault : IValidation
             Id != Guid.Empty &&
             AccountId != Guid.Empty &&
             BlobId != Guid.Empty &&
+            CreatedAt.Kind == DateTimeKind.Utc &&
+            UpdatedAt.Kind == DateTimeKind.Utc &&
             CreatedAt >= DateTime.UnixEpoch &&
             UpdatedAt >= CreatedAt;
     }
