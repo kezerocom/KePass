@@ -3,6 +3,7 @@ using KePass.Server.Models;
 using KePass.Server.Repositories.Definitions;
 using KePass.Server.Services.Definitions;
 using KePass.Server.ValueObjects;
+using KePass.Server.ValueObjects.Enums;
 
 namespace KePass.Server.Services.Implementations;
 
@@ -11,6 +12,7 @@ public class AccountService(IRepository<Account> repository) : IAccountService
     public async Task<OperationResult<Account>> GetByIdAsync(Guid id)
     {
         var account = await repository.GetByIdAsync(id);
+
         return account != null
             ? OperationResult<Account>.Ok(account)
             : OperationResult<Account>.Fail($"Account with ID '{id}' not found.");
@@ -18,8 +20,7 @@ public class AccountService(IRepository<Account> repository) : IAccountService
 
     public async Task<OperationResult<Account>> GetByUsernameAsync(string username)
     {
-        var account = await repository.GetAsync(a =>
-            a.Username.ToLowerInvariant().Trim() == username.ToLowerInvariant().Trim());
+        var account = await repository.GetAsync(a => a.Username.ToLower().Trim() == username.ToLower().Trim());
 
         return account != null
             ? OperationResult<Account>.Ok(account)
@@ -28,15 +29,15 @@ public class AccountService(IRepository<Account> repository) : IAccountService
 
     public async Task<OperationResult<Account>> GetByEmailAsync(Email email)
     {
-        var account = await repository.GetAsync(a =>
-            a.Email.Value.ToLowerInvariant().Trim() == email.Value.ToLowerInvariant().Trim());
+        var account = await repository.GetAsync(a => a.Email.Value.ToLower().Trim() == email.Value.ToLower().Trim());
 
         return account != null
             ? OperationResult<Account>.Ok(account)
             : OperationResult<Account>.Fail($"Account with email '{email.Value}' not found.");
     }
 
-    public async Task<OperationResult<Account>> CreateAsync(string username, Email email, Password password)
+    public async Task<OperationResult<Account>> CreateAsync(string username, Email email, Password password,
+        AccountRole role)
     {
         if (!email.IsValid())
             return OperationResult<Account>.Fail($"Invalid email '{email.Value}'.");
@@ -53,10 +54,11 @@ public class AccountService(IRepository<Account> repository) : IAccountService
         var account = new Account
         {
             Id = Guid.CreateVersion7(),
-            Username = username.ToLowerInvariant().Trim(),
+            Username = username.ToLower().Trim(),
             Email = email,
             Password = password,
             IsActive = true,
+            Role = role,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
@@ -80,7 +82,7 @@ public class AccountService(IRepository<Account> repository) : IAccountService
         if (!accountResult.Success) return accountResult;
 
         var account = accountResult.Result;
-        account.Username = newUsername.ToLowerInvariant().Trim();
+        account.Username = newUsername.ToLower().Trim();
 
         return await UpdateAccountAsync(account);
     }
@@ -112,6 +114,17 @@ public class AccountService(IRepository<Account> repository) : IAccountService
 
         var account = accountResult.Result;
         account.Password = newPassword;
+
+        return await UpdateAccountAsync(account);
+    }
+
+    public async Task<OperationResult<Account>> UpdateRoleAsync(Guid id, AccountRole role)
+    {
+        var accountResult = await GetByIdAsync(id);
+        if (!accountResult.Success) return accountResult;
+
+        var account = accountResult.Result;
+        account.Role = role;
 
         return await UpdateAccountAsync(account);
     }

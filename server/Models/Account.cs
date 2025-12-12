@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using KePass.Server.Commons.Definitions;
 using KePass.Server.ValueObjects;
+using KePass.Server.ValueObjects.Enums;
 
 namespace KePass.Server.Models;
 
@@ -11,6 +12,7 @@ public class Account : IValidation
     public required Password Password { get; set; }
     public required Email Email { get; set; }
     public required bool IsActive { get; set; }
+    public required AccountRole Role { get; set; }
     public required DateTime CreatedAt { get; set; }
     public required DateTime UpdatedAt { get; set; }
 
