@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KePass.Server.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20251212060910_Update01")]
-    partial class Update01
+    [Migration("20251210173003_Update001")]
+    partial class Update001
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -112,38 +112,9 @@ namespace KePass.Server.Migrations
                     b.Property<int>("ResourceType")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
                     b.ToTable("Audits");
-                });
-
-            modelBuilder.Entity("KePass.Server.Models.Blob", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("Name")
-                        .HasColumnType("TEXT");
-
-                    b.Property<long>("Size")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Blobs");
                 });
 
             modelBuilder.Entity("KePass.Server.Models.Subscription", b =>
@@ -164,14 +135,14 @@ namespace KePass.Server.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("Name")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("PaymentId")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<long>("Storage")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Type")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -217,6 +188,32 @@ namespace KePass.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Vaults");
+                });
+
+            modelBuilder.Entity("KePass.Server.Types.Blob", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("Size")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Blob");
                 });
 #pragma warning restore 612, 618
         }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace KePass.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class Update01 : Migration
+    public partial class Update003 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

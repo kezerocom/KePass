@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KePass.Server.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20251210212518_FixBlobModel")]
-    partial class FixBlobModel
+    [Migration("20251210212518_Update002")]
+    partial class Update002
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
