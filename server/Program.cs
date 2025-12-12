@@ -1,8 +1,6 @@
 using System.Text.Json.Serialization;
-using KePass.Server.Commons.Definitions;
 using KePass.Server.Data;
 using KePass.Server.Middlewares;
-using KePass.Server.Models;
 using KePass.Server.Repositories.Definitions;
 using KePass.Server.Repositories.Implementations;
 using KePass.Server.Services.Definitions;
@@ -24,6 +22,8 @@ builder.Services.AddAuthorization();
 builder.Services.AddSingleton<IEnvironmentService, EnvironmentService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBaseBase<>));
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ICurrentIdentity, CurrentIdentity>();
 
 builder.Services.AddDbContext<DatabaseContext>();
 

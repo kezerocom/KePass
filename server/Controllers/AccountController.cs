@@ -11,7 +11,7 @@ namespace KePass.Server.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/account")]
-public class AccountController(IAccountService service) : ControllerBase
+public class AccountController(IAccountService service, ICurrentIdentity identity) : ControllerBase
 {
     [AllowAnonymous]
     [HttpGet("{id:guid}")]
@@ -23,9 +23,9 @@ public class AccountController(IAccountService service) : ControllerBase
         if (id == Guid.Empty)
             return BadRequest(new ValidationProblemDetails { Detail = "Invalid ID." });
 
-        var result = await service.GetByIdAsync(id);
+        var result = await service.GetByIdAsync(id, identity);
         if (!result.Success)
-            return NotFound(new ErrorProblemDetails("Resource Not Found", result.Error));
+            return NotFound(new ErrorProblemDetails(result.Error));
 
         var response = AccountDetails.CreateFromAccount(result.Result);
 
@@ -42,9 +42,9 @@ public class AccountController(IAccountService service) : ControllerBase
         if (string.IsNullOrWhiteSpace(username))
             return BadRequest(new ValidationProblemDetails { Detail = "Username is required." });
 
-        var result = await service.GetByUsernameAsync(username);
+        var result = await service.GetByUsernameAsync(username, identity);
         if (!result.Success)
-            return NotFound(new ErrorProblemDetails("Resource Not Found", result.Error));
+            return NotFound(new ErrorProblemDetails(result.Error));
 
         var response = AccountDetails.CreateFromAccount(result.Result);
 
@@ -61,9 +61,9 @@ public class AccountController(IAccountService service) : ControllerBase
         var emailObj = new Email(email);
         if (!emailObj.IsValid()) return BadRequest(new ValidationProblemDetails { Detail = "Invalid email format." });
 
-        var result = await service.GetByEmailAsync(emailObj);
+        var result = await service.GetByEmailAsync(emailObj, identity);
         if (!result.Success)
-            return NotFound(new ErrorProblemDetails("Resource Not Found", result.Error));
+            return NotFound(new ErrorProblemDetails(result.Error));
 
         var response = AccountDetails.CreateFromAccount(result.Result);
 
@@ -86,10 +86,9 @@ public class AccountController(IAccountService service) : ControllerBase
         if (!password.IsValid())
             return BadRequest(new ValidationProblemDetails { Detail = "Invalid password." });
 
-        var result = await service.CreateAsync(request.Username, email, password, AccountRole.User);
+        var result = await service.CreateAsync(request.Username, email, password, AccountRole.User, identity);
         if (!result.Success)
-            return BadRequest(new ErrorProblemDetails("Account Creation Failed",
-                result.Error));
+            return BadRequest(new ErrorProblemDetails(result.Error));
 
         var response = AccountDetails.CreateFromAccount(result.Result);
 
@@ -105,9 +104,9 @@ public class AccountController(IAccountService service) : ControllerBase
         if (id == Guid.Empty || string.IsNullOrWhiteSpace(newUsername))
             return BadRequest(new ValidationProblemDetails { Detail = "Invalid input." });
 
-        var result = await service.UpdateUsernameAsync(id, newUsername);
+        var result = await service.UpdateUsernameAsync(id, newUsername, identity);
         if (!result.Success)
-            return NotFound(new ErrorProblemDetails("Resource Not Found",
+            return NotFound(new ErrorProblemDetails(
                 result.Error));
 
         var response = AccountDetails.CreateFromAccount(result.Result);
@@ -124,9 +123,9 @@ public class AccountController(IAccountService service) : ControllerBase
         if (id == Guid.Empty || !emailObj.IsValid())
             return BadRequest(new ValidationProblemDetails { Detail = "Invalid input." });
 
-        var result = await service.UpdateEmailAsync(id, emailObj);
+        var result = await service.UpdateEmailAsync(id, emailObj, identity);
         if (!result.Success)
-            return NotFound(new ErrorProblemDetails("Resource Not Found",
+            return NotFound(new ErrorProblemDetails(
                 result.Error));
 
         var response = AccountDetails.CreateFromAccount(result.Result);
@@ -144,9 +143,9 @@ public class AccountController(IAccountService service) : ControllerBase
         if (id == Guid.Empty || !newPassword.IsValid())
             return BadRequest(new ValidationProblemDetails { Detail = "Invalid password." });
 
-        var result = await service.UpdatePasswordAsync(id, newPassword);
+        var result = await service.UpdatePasswordAsync(id, newPassword, identity);
         if (!result.Success)
-            return NotFound(new ErrorProblemDetails("Resource Not Found", result.Error));
+            return NotFound(new ErrorProblemDetails(result.Error));
 
         var response = AccountDetails.CreateFromAccount(result.Result);
         return Ok(response);
@@ -160,9 +159,9 @@ public class AccountController(IAccountService service) : ControllerBase
     {
         if (id == Guid.Empty) return BadRequest(new ValidationProblemDetails { Detail = "Invalid ID." });
 
-        var result = await service.ActivateAsync(id);
+        var result = await service.ActivateAsync(id, identity);
         if (!result.Success)
-            return NotFound(new ErrorProblemDetails("Resource Not Found", result.Error));
+            return NotFound(new ErrorProblemDetails(result.Error));
 
         var response = AccountDetails.CreateFromAccount(result.Result);
         return Ok(response);
@@ -176,9 +175,9 @@ public class AccountController(IAccountService service) : ControllerBase
     {
         if (id == Guid.Empty) return BadRequest(new ValidationProblemDetails { Detail = "Invalid ID." });
 
-        var result = await service.UpdateRoleAsync(id, request.Role);
+        var result = await service.UpdateRoleAsync(id, request.Role, identity);
         if (!result.Success)
-            return NotFound(new ErrorProblemDetails("Resource Not Found", result.Error));
+            return NotFound(new ErrorProblemDetails(result.Error));
 
         var response = AccountDetails.CreateFromAccount(result.Result);
         return Ok(response);
@@ -193,9 +192,9 @@ public class AccountController(IAccountService service) : ControllerBase
     {
         if (id == Guid.Empty) return BadRequest(new ValidationProblemDetails { Detail = "Invalid ID." });
 
-        var result = await service.DeactivateAsync(id);
+        var result = await service.DeactivateAsync(id, identity);
         if (!result.Success)
-            return NotFound(new ErrorProblemDetails("Resource Not Found", result.Error));
+            return NotFound(new ErrorProblemDetails(result.Error));
 
         var response = AccountDetails.CreateFromAccount(result.Result);
         return Ok(response);
