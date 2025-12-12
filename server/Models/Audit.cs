@@ -3,7 +3,7 @@ using KePass.Server.ValueObjects.Enums;
 
 namespace KePass.Server.Models;
 
-public class Audit : IValidation
+public class Audit : IEntity, IValidation
 {
     public required Guid Id { get; set; }
     public required Guid AccountId { get; set; }

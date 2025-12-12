@@ -3,7 +3,7 @@ using KePass.Server.ValueObjects;
 
 namespace KePass.Server.Models;
 
-public class Attachment : IValidation
+public class Attachment : IEntity, IValidation
 {
     public required Guid Id { get; set; }
     public required Guid Name { get; set; }

@@ -1,8 +1,9 @@
 ﻿using System.Linq.Expressions;
+using KePass.Server.Commons.Definitions;
 
 namespace KePass.Server.Repositories.Definitions;
 
-public interface IRepository<T> where T : class
+public interface IRepositoryBase<T> where T : IEntity
 {
     Task<T?> GetAsync(Expression<Func<T, bool>> predicate);
     Task<T?> GetByIdAsync(Guid id);

@@ -3,7 +3,7 @@ using KePass.Server.ValueObjects;
 
 namespace KePass.Server.Models;
 
-public class Vault : IValidation
+public class Vault : IEntity, IValidation
 {
     public required Guid Id { get; set; }
     public required Guid AccountId { get; set; }

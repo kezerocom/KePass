@@ -7,11 +7,11 @@ using KePass.Server.ValueObjects.Enums;
 
 namespace KePass.Server.Services.Implementations;
 
-public class AccountService(IRepository<Account> repository) : IAccountService
+public class AccountService(IRepositoryBase<Account> repositoryBase) : IAccountService
 {
     public async Task<OperationResult<Account>> GetByIdAsync(Guid id)
     {
-        var account = await repository.GetByIdAsync(id);
+        var account = await repositoryBase.GetByIdAsync(id);
 
         return account != null
             ? OperationResult<Account>.Ok(account)
@@ -20,7 +20,7 @@ public class AccountService(IRepository<Account> repository) : IAccountService
 
     public async Task<OperationResult<Account>> GetByUsernameAsync(string username)
     {
-        var account = await repository.GetAsync(a => a.Username.ToLower().Trim() == username.ToLower().Trim());
+        var account = await repositoryBase.GetAsync(a => a.Username.ToLower().Trim() == username.ToLower().Trim());
 
         return account != null
             ? OperationResult<Account>.Ok(account)
@@ -29,7 +29,7 @@ public class AccountService(IRepository<Account> repository) : IAccountService
 
     public async Task<OperationResult<Account>> GetByEmailAsync(Email email)
     {
-        var account = await repository.GetAsync(a => a.Email.Value.ToLower().Trim() == email.Value.ToLower().Trim());
+        var account = await repositoryBase.GetAsync(a => a.Email.Value.ToLower().Trim() == email.Value.ToLower().Trim());
 
         return account != null
             ? OperationResult<Account>.Ok(account)
@@ -66,7 +66,7 @@ public class AccountService(IRepository<Account> repository) : IAccountService
         if (!account.IsValid())
             return OperationResult<Account>.Fail("Created account entity is invalid.");
 
-        var created = await repository.AddAsync(account);
+        var created = await repositoryBase.AddAsync(account);
 
         return created != null
             ? OperationResult<Account>.Ok(created)
@@ -159,7 +159,7 @@ public class AccountService(IRepository<Account> repository) : IAccountService
         if (!account.IsValid())
             return OperationResult<Account>.Fail("Account entity is invalid.");
 
-        var updated = await repository.UpdateAsync(account);
+        var updated = await repositoryBase.UpdateAsync(account);
 
         return updated != null
             ? OperationResult<Account>.Ok(updated)

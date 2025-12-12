@@ -5,7 +5,7 @@ using KePass.Server.ValueObjects.Enums;
 
 namespace KePass.Server.Models;
 
-public class Account : IValidation
+public class Account : IEntity, IValidation
 {
     public required Guid Id { get; set; }
     public required string Username { get; set; }

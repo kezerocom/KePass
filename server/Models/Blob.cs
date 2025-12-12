@@ -2,7 +2,7 @@
 
 namespace KePass.Server.Models;
 
-public class Blob : IValidation
+public class Blob : IEntity, IValidation
 {
     public required Guid Id { get; set; }
     public required Guid Name { get; set; }
