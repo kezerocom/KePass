@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace KePass.Server.Types;
+namespace KePass.Server.Extensions;
 
 public static class VersionExtension
 {

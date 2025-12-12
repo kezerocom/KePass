@@ -1,4 +1,5 @@
-﻿using KePass.Server.Models;
+﻿using KePass.Server.Extensions;
+using KePass.Server.Models;
 using KePass.Server.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
