@@ -17,7 +17,7 @@ public class AccountController(IAccountService service) : ControllerBase
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(AccountDetails), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorProblemDetails), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
         if (id == Guid.Empty)
@@ -25,7 +25,7 @@ public class AccountController(IAccountService service) : ControllerBase
 
         var result = await service.GetByIdAsync(id);
         if (!result.Success)
-            return NotFound(new ErrorProblemDetails(result.Error));
+            return StatusCode(StatusCodes.Status403Forbidden, new ErrorProblemDetails(result.Error));
 
         var response = AccountDetails.CreateFromAccount(result.Result);
 
@@ -36,7 +36,7 @@ public class AccountController(IAccountService service) : ControllerBase
     [HttpGet("username/{username}")]
     [ProducesResponseType(typeof(AccountDetails), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorProblemDetails), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetByUsername([FromRoute] string username)
     {
         if (string.IsNullOrWhiteSpace(username))
@@ -44,7 +44,7 @@ public class AccountController(IAccountService service) : ControllerBase
 
         var result = await service.GetByUsernameAsync(username);
         if (!result.Success)
-            return NotFound(new ErrorProblemDetails(result.Error));
+            return StatusCode(StatusCodes.Status403Forbidden, new ErrorProblemDetails(result.Error));
 
         var response = AccountDetails.CreateFromAccount(result.Result);
 
@@ -55,7 +55,7 @@ public class AccountController(IAccountService service) : ControllerBase
     [HttpGet("email/{email}")]
     [ProducesResponseType(typeof(AccountDetails), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorProblemDetails), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetByEmail([FromRoute] string email)
     {
         var emailObj = new Email(email);
@@ -63,7 +63,7 @@ public class AccountController(IAccountService service) : ControllerBase
 
         var result = await service.GetByEmailAsync(emailObj);
         if (!result.Success)
-            return NotFound(new ErrorProblemDetails(result.Error));
+            return StatusCode(StatusCodes.Status403Forbidden, new ErrorProblemDetails(result.Error));
 
         var response = AccountDetails.CreateFromAccount(result.Result);
 
@@ -74,6 +74,7 @@ public class AccountController(IAccountService service) : ControllerBase
     [HttpPost]
     [ProducesResponseType(typeof(AccountDetails), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ErrorProblemDetails), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Create([FromBody] CreateRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.Username))
@@ -88,17 +89,17 @@ public class AccountController(IAccountService service) : ControllerBase
 
         var result = await service.CreateAsync(request.Username, email, password, AccountRole.User);
         if (!result.Success)
-            return BadRequest(new ErrorProblemDetails(result.Error));
+            return StatusCode(StatusCodes.Status403Forbidden, new ErrorProblemDetails(result.Error));
 
         var response = AccountDetails.CreateFromAccount(result.Result);
-
+        
         return CreatedAtAction(nameof(GetById), new { id = result.Result.Id }, response);
     }
 
     [HttpPut("{id:guid}/username")]
     [ProducesResponseType(typeof(AccountDetails), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorProblemDetails), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> UpdateUsername([FromRoute] Guid id, [FromBody] string newUsername)
     {
         if (id == Guid.Empty || string.IsNullOrWhiteSpace(newUsername))
@@ -106,7 +107,7 @@ public class AccountController(IAccountService service) : ControllerBase
 
         var result = await service.UpdateUsernameAsync(id, newUsername);
         if (!result.Success)
-            return NotFound(new ErrorProblemDetails(
+            return StatusCode(StatusCodes.Status403Forbidden, new ErrorProblemDetails(
                 result.Error));
 
         var response = AccountDetails.CreateFromAccount(result.Result);
@@ -116,7 +117,7 @@ public class AccountController(IAccountService service) : ControllerBase
     [HttpPut("{id:guid}/email")]
     [ProducesResponseType(typeof(AccountDetails), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorProblemDetails), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> UpdateEmail([FromRoute] Guid id, [FromBody] string newEmail)
     {
         var emailObj = new Email(newEmail);
@@ -125,7 +126,7 @@ public class AccountController(IAccountService service) : ControllerBase
 
         var result = await service.UpdateEmailAsync(id, emailObj);
         if (!result.Success)
-            return NotFound(new ErrorProblemDetails(
+            return StatusCode(StatusCodes.Status403Forbidden, new ErrorProblemDetails(
                 result.Error));
 
         var response = AccountDetails.CreateFromAccount(result.Result);
@@ -135,7 +136,7 @@ public class AccountController(IAccountService service) : ControllerBase
     [HttpPut("{id:guid}/password")]
     [ProducesResponseType(typeof(AccountDetails), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorProblemDetails), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> UpdatePassword([FromRoute] Guid id, [FromBody] UpdatePasswordRequest request)
     {
         var newPassword = request.ToPassword();
@@ -145,7 +146,7 @@ public class AccountController(IAccountService service) : ControllerBase
 
         var result = await service.UpdatePasswordAsync(id, newPassword);
         if (!result.Success)
-            return NotFound(new ErrorProblemDetails(result.Error));
+            return StatusCode(StatusCodes.Status403Forbidden, new ErrorProblemDetails(result.Error));
 
         var response = AccountDetails.CreateFromAccount(result.Result);
         return Ok(response);
@@ -154,14 +155,14 @@ public class AccountController(IAccountService service) : ControllerBase
     [HttpPut("{id:guid}/activate")]
     [ProducesResponseType(typeof(AccountDetails), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorProblemDetails), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Activate([FromRoute] Guid id)
     {
         if (id == Guid.Empty) return BadRequest(new ValidationProblemDetails { Detail = "Invalid ID." });
 
         var result = await service.ActivateAsync(id);
         if (!result.Success)
-            return NotFound(new ErrorProblemDetails(result.Error));
+            return StatusCode(StatusCodes.Status403Forbidden, new ErrorProblemDetails(result.Error));
 
         var response = AccountDetails.CreateFromAccount(result.Result);
         return Ok(response);
@@ -170,14 +171,14 @@ public class AccountController(IAccountService service) : ControllerBase
     [HttpPut("{id:guid}/role")]
     [ProducesResponseType(typeof(AccountDetails), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorProblemDetails), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> UpdateRole([FromRoute] Guid id, [FromBody] UpdateRoleRequest request)
     {
         if (id == Guid.Empty) return BadRequest(new ValidationProblemDetails { Detail = "Invalid ID." });
 
         var result = await service.UpdateRoleAsync(id, request.Role);
         if (!result.Success)
-            return NotFound(new ErrorProblemDetails(result.Error));
+            return StatusCode(StatusCodes.Status403Forbidden, new ErrorProblemDetails(result.Error));
 
         var response = AccountDetails.CreateFromAccount(result.Result);
         return Ok(response);
@@ -187,14 +188,14 @@ public class AccountController(IAccountService service) : ControllerBase
     [HttpPut("{id:guid}/deactivate")]
     [ProducesResponseType(typeof(AccountDetails), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ErrorProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorProblemDetails), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Deactivate([FromRoute] Guid id)
     {
         if (id == Guid.Empty) return BadRequest(new ValidationProblemDetails { Detail = "Invalid ID." });
 
         var result = await service.DeactivateAsync(id);
         if (!result.Success)
-            return NotFound(new ErrorProblemDetails(result.Error));
+            return StatusCode(StatusCodes.Status403Forbidden, new ErrorProblemDetails(result.Error));
 
         var response = AccountDetails.CreateFromAccount(result.Result);
         return Ok(response);
