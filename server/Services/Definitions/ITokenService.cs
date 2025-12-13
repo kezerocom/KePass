@@ -5,6 +5,6 @@ namespace KePass.Server.Services.Definitions;
 
 public interface ITokenService
 {
-    string? Create(Identity? identity);
-    Identity? Parse(string? token);
+    string? Create(CurrentAccount? current);
+    CurrentAccount? Parse(string? token);
 }

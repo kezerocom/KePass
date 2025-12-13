@@ -5,7 +5,7 @@ using KePass.Server.ValueObjects.Enums;
 namespace KePass.Server.Commons;
 
 [Serializable]
-public class Identity
+public class CurrentAccount
 {
     public required Guid Id { get; set; }
     public required string Username { get; set; }
@@ -13,13 +13,13 @@ public class Identity
     public required AccountRole Role { get; set; }
 
 
-    public static Identity? CreateFromAccount(Account? account)
+    public static CurrentAccount? CreateFromAccount(Account? account)
     {
         try
         {
             if (account == null) return null;
 
-            return new Identity
+            return new CurrentAccount
             {
                 Id = account!.Id,
                 Username = account.Username,
@@ -33,13 +33,13 @@ public class Identity
         }
     }
 
-    public static Identity? CreateFromClaims(Claim[]? claims)
+    public static CurrentAccount? CreateFromClaims(Claim[]? claims)
     {
         try
         {
             if (claims == null || claims.Length == 0) return null;
 
-            return new Identity
+            return new CurrentAccount
             {
                 Id = Guid.Parse(claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value),
                 Username = claims.First(x => x.Type == ClaimTypes.Name).Value,

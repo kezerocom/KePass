@@ -23,7 +23,7 @@ builder.Services.AddSingleton<IEnvironmentService, EnvironmentService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBaseBase<>));
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<ICurrentIdentity, CurrentIdentity>();
+builder.Services.AddScoped<IAccountContext, AccountContext>();
 
 builder.Services.AddDbContext<DatabaseContext>();
 

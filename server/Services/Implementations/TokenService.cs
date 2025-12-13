@@ -16,9 +16,9 @@ public class TokenService(IEnvironmentService environment, ILogger<TokenService>
                                                       throw new Exception("Application Key not set")));
     }
 
-    public string? Create(Identity? identity)
+    public string? Create(CurrentAccount? current)
     {
-        if (identity == null) return null;
+        if (current == null) return null;
 
         try
         {
@@ -26,7 +26,7 @@ public class TokenService(IEnvironmentService environment, ILogger<TokenService>
             var handler = new JwtSecurityTokenHandler();
             var descriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(identity.ToClaims()),
+                Subject = new ClaimsIdentity(current.ToClaims()),
                 Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256),
@@ -43,7 +43,7 @@ public class TokenService(IEnvironmentService environment, ILogger<TokenService>
         }
     }
 
-    public Identity? Parse(string? token)
+    public CurrentAccount? Parse(string? token)
     {
         if (string.IsNullOrEmpty(token)) return null;
 
@@ -64,7 +64,7 @@ public class TokenService(IEnvironmentService environment, ILogger<TokenService>
             
             var principal = handler.ValidateToken(token, validationParameters, out _);
 
-            return Identity.CreateFromClaims(principal.Claims.ToArray());
+            return CurrentAccount.CreateFromClaims(principal.Claims.ToArray());
         }
         catch (Exception e)
         {

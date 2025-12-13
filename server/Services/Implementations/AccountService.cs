@@ -7,7 +7,7 @@ using KePass.Server.ValueObjects.Enums;
 
 namespace KePass.Server.Services.Implementations;
 
-public class AccountService(IRepositoryBase<Account> repository, ICurrentIdentity identity) : IAccountService
+public class AccountService(IRepositoryBase<Account> repository, IAccountContext context) : IAccountService
 {
     public async Task<OperationResult<Account>> GetByIdAsync(Guid id)
     {

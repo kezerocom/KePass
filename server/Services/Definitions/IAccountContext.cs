@@ -2,9 +2,9 @@
 
 namespace KePass.Server.Services.Definitions;
 
-public interface ICurrentIdentity
+public interface IAccountContext
 {
     bool IsExistent { get; }
     bool IsNotExistent { get; }
-    Identity? Identity { get; }
+    CurrentAccount? Current { get; }
 }
